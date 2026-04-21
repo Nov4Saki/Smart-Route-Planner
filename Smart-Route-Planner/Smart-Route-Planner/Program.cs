@@ -1,13 +1,24 @@
+using Microsoft.EntityFrameworkCore;
+using Smart_Route_Planner.Data;
+
 namespace Smart_Route_Planner
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddHttpClient<SeedService>();
+
+            // Add DbContext Service
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             var app = builder.Build();
 
@@ -29,6 +40,19 @@ namespace Smart_Route_Planner
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var seeder = scope.ServiceProvider.GetRequiredService<SeedService>();
+
+                await db.Database.MigrateAsync();
+
+                if (!db.Nodes.Any())
+                {
+                    await seeder.SeedAsync(db);
+                }
+            }
 
             app.Run();
         }
