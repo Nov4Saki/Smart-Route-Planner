@@ -1,0 +1,55 @@
+﻿@model List<ResultVM>
+@{
+    ViewData["Title"] = " Nearby Apartments";
+}
+
+<main class="results-page">
+
+    <!-- ── SIDEBAR ── -->
+    <aside id="sidebar">
+        <div class="sidebar-head">
+            <a href="/home" class="back-link">
+                <i class="bi bi-arrow-left"></i> Change location
+            </a>
+            <div class="brand">
+                <div class="brand-dot"></div>
+                NestFinder
+            </div>
+            <div class="sidebar-sub">Apartments near your pin</div>
+        </div>
+
+        <div class="loc-chip">
+            <i class="bi bi-geo-alt-fill"></i>
+            <div>
+                <div class="loc-chip-label">Your location</div>
+                <div class="loc-chip-val" id="user-coords">—</div>
+            </div>
+        </div>
+
+        <div class="section-label">
+            Nearby Apartments
+            <span class="count-badge" id="apt-count">0</span>
+        </div>
+
+        <div id="apt-list"></div>
+    </aside>
+
+    <!-- ── MAP ── -->
+    <div id="map-wrap">
+        <div id="map"></div>
+        <div id="route-info">
+            <div class="dot"></div>
+            <div class="spinner"></div>
+            Route to: <strong id="route-name">—</strong>
+            &nbsp;·&nbsp;
+            <i class="bi bi-rulers"></i> <span id="route-dist">—</span> m
+        </div>
+    </div>
+
+</main>
+
+@section Scripts {
+    <script>
+        const apartments = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+    </script>
+}
