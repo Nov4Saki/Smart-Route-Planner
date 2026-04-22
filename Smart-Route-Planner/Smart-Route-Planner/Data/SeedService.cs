@@ -31,7 +31,7 @@ namespace Smart_Route_Planner.Data
 
             var json = await response.Content.ReadAsStringAsync();
             var data = JsonSerializer.Deserialize<OverpassResponse>(json);
-
+            if (data?.elements == null) return;
 
             var nodesDict = new Dictionary<long, Node>();
             foreach (var el in data.elements.Where(e => e.type == "node"))
@@ -55,8 +55,8 @@ namespace Smart_Route_Planner.Data
 
                     edges.Add(new Edge
                     {
-                        FromNodeId = from.OsmId,
-                        ToNodeId = to.OsmId,
+                        FromNode = from,
+                        ToNode = to,
                         Distance = Haversine(from, to)
                     });
                 }
@@ -124,7 +124,7 @@ namespace Smart_Route_Planner.Data
                 if (dist < minDist)
                 {
                     minDist = dist;
-                    nearestId = node.OsmId;
+                    nearestId = node.Id;
                 }
             }
 

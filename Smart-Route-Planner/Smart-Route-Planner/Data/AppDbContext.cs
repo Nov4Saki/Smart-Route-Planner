@@ -16,6 +16,7 @@ namespace Smart_Route_Planner.Data
         {
             base.OnModelCreating(builder);
             builder.ApplyConfiguration(new ApartmentConfiguration());
+            builder.ApplyConfiguration(new EdgeConfiguration());
         }
     }
 }
